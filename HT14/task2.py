@@ -37,7 +37,7 @@ class Currency:
 					return element
 
 	def return_result(self, element):
-		"""Searching for the desired currency returns a dictionary with data of the currency"""
+		"""Searching for the desired currency returns a dictionary with data of the currency."""
 
 		result = f'\n Курси валют саном на {self.date} для {self.currency}.\n'
 		for kay, value in element.items():
