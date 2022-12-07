@@ -5,6 +5,8 @@
     ураховуючи пагінацію). Всі отримані значення зберегти в CSV файл."""
 
 import csv
+import random
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -15,17 +17,19 @@ class Domains:
 	base_url = "https://www.expireddomains.net/"
 	url = "godaddy-closeout-domains/?"
 	all_domains = []
+	session = requests.Session()
 
 	def get_information(self, number_page):
 		"""Запит всієї інформації з сайту"""
 
-		element = requests.get(f"{self.base_url}{self.url}{number_page}").text
+		element = self.session.get(f"{self.base_url}{self.url}{number_page}").content
+		#element = requests.get(f"{self.base_url}{self.url}{number_page}").content
 		print(f"{self.base_url}{self.url}{number_page}")
 		return element
 
 	def parse(self, number_page):
 		element = self.get_information(number_page)
-		soup = BeautifulSoup(element, "html.parser")
+		soup = BeautifulSoup(element, "lxml")
 		table = soup.find('table', class_='base1')
 		return table
 
@@ -49,6 +53,8 @@ class Domains:
 	def transformation(self):
 		"""Перетворення отриманої інформації в список"""
 
+		requests.get(f"{self.base_url}")
+		time.sleep(random.randrange(20, 35))
 		first_page = '#listing'
 		tabl = self.parse(first_page)
 		headers = self.get_header(tabl)
@@ -71,6 +77,7 @@ class Domains:
 
 if __name__ == '__main__':
 	domain = Domains()
+	time.sleep(random.randrange(20, 35))
 	domain.transformation()
 	domain.writer()
 	print('ok')
