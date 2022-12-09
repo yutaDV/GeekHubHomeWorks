@@ -7,6 +7,7 @@
 import csv
 import random
 import time
+from random import choice
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,11 +20,30 @@ class Domains:
 	all_domains = []
 	session = requests.Session()
 
+	def __init__(self, header=None):
+		self.header = self.random_headers()
+
+	def random_headers(self):
+
+		desktop_agents = [
+			'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
+			'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
+			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14',
+			'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36',
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36',
+			'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+			'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
+			'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0']
+
+		return {'User-Agent': choice(desktop_agents),
+				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'}
+
 	def get_information(self, number_page):
 		"""Запит всієї інформації з сайту"""
 
-		element = self.session.get(f"{self.base_url}{self.url}{number_page}").content
-		#element = requests.get(f"{self.base_url}{self.url}{number_page}").content
+		element = self.session.get(f"{self.base_url}{self.url}{number_page}", headers=self.header).content
 		print(f"{self.base_url}{self.url}{number_page}")
 		return element
 
@@ -53,8 +73,6 @@ class Domains:
 	def transformation(self):
 		"""Перетворення отриманої інформації в список"""
 
-		requests.get(f"{self.base_url}")
-		time.sleep(random.randrange(20, 35))
 		first_page = '#listing'
 		tabl = self.parse(first_page)
 		headers = self.get_header(tabl)
@@ -77,7 +95,7 @@ class Domains:
 
 if __name__ == '__main__':
 	domain = Domains()
-	time.sleep(random.randrange(20, 35))
+	time.sleep(random.randrange(30, 45))
 	domain.transformation()
 	domain.writer()
 	print('ok')
