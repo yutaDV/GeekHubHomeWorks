@@ -92,6 +92,7 @@ class Domains:
 		self.all_domains.append(headers)
 		self.get_rows(tabl)
 		for page in range(25, 325, 25):
+			time.sleep(random.randrange(10, 25))
 			next_page = f'start={page}#listing'
 			tabl = self.parse(next_page)
 			self.get_rows(tabl)
