@@ -1,11 +1,7 @@
 import scrapy
 
-def input_category():
 
-    result = input('Введіть назву та ID категорії через / (приклад:mobile-phones/c80003/)')
-    return result
-
-category = input_category()
+category = 'headphones/c80027'
 
 class RozetkaApiSpider(scrapy.Spider):
     name = 'rozetka_api'
@@ -19,7 +15,10 @@ class RozetkaApiSpider(scrapy.Spider):
 
     def parse_product(self, response):
         yield{
+            'ID': response.css('p.product__code.detail-code::text').get()[1:],
             'name': response.css('h1.product__title::text').get(),
             'price': response.css('p.product-prices__big::text').get(),
+            'old_price': response.css('p.product-prices__small.ng-star-inserted::text')[0].get()[:-1],
             'currency': response.css('span.product-prices__symbol::text').get(),
+            'is available': response.css('p.status-label.status-label--green.ng-star-inserted::text').get()[:-1]
         }
