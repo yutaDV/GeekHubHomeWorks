@@ -21,33 +21,33 @@
     - додайте до цього файлу отримане зображення робота (бажано на одній сторінці, але не принципово)
     - збережіть отриманий PDF файл у форматі <номер чеку>_robot в директорію output. Окремо зображення робота зберігати
      не потрібно."""
-import time
 import os
 import shutil
-from pathlib import Path
+import time
 
+from pathlib import Path
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select
 
 import read_csv
 
+
 class RobotsPlacer:
-    def __init__(self, head, body, legs, address):
+
+    def __init__(self, head=None, body=None, legs=None, address=None):
         self.url = 'https://robotsparebinindustries.com/#/robot-order'
         self.driver: Chrome | None = None
         self.head = head
         self.body = body
         self.legs= legs
         self.address = address
-
 
     def __enter__(self):
         self.driver = self.__init_driver()
@@ -83,7 +83,6 @@ class RobotsPlacer:
                 'profile.default_content_settings.popups': 0
             }
         )
-
         driver = Chrome(service=service, options=chrome_options)
         driver.maximize_window()
         return driver
@@ -91,15 +90,24 @@ class RobotsPlacer:
     def flow(self):
         self.open_site()
         self.go_to_order()
-        self.close_pop()
-        self.input_head()
-        self.input_body()
-        self.input_legs()
-        self.input_address()
-        self.preview()
-        self.save_screen()
-        self.saved_order()
-        self.rename_screen()
+        file = read_csv.CsvFile()
+        robot_param = file.read_file()
+        for order in robot_param:
+            self.close_pop()
+            self.head = order[0]
+            self.body = order[1]
+            self.legs = order[2]
+            self.address = order[3]
+            self.input_head()
+            self.input_body()
+            self.input_legs()
+            self.input_address()
+            self.preview()
+            self.save_screen()
+            self.saved_order()
+            self.rename_screen()
+            self.move_file()
+            self.next_robot()
         return
 
     def open_site (self):
@@ -132,9 +140,10 @@ class RobotsPlacer:
         return
 
     def input_body(self):
-        selector = f'#root > div > div.container > div > div.col-sm-7 > form > div:nth-child(2) > div > div:nth-child({self.body}) > label'
+        selector = f'#id-body-{self.body}'
         body = self._wait_for_element(selector)
         body.click()
+        time.sleep(1)
         return
 
     def input_legs(self):
@@ -153,6 +162,7 @@ class RobotsPlacer:
         return
 
     def save_screen(self):
+        time.sleep(1)
         screen = Path.cwd()
         robot_screen = self._wait_for_element('#robot-preview-image')
         robot_screen.screenshot(str(Path(screen, 'robot.png')))
@@ -164,31 +174,42 @@ class RobotsPlacer:
         return
 
     def check_number(self):
-        check_number = self.driver.find_element(By.CLASS_NAME, 'badge.badge-success').text
-        return check_number
+        while True:
+            try:
+                check_number = self.driver.find_element(By.CLASS_NAME, 'badge.badge-success').text
+            except:
+                self.saved_order()
+            else:
+                return check_number
+
+    def new_name(self):
+        file_name = f'{self.check_number()}_robot.png'
+        return file_name
 
     def rename_screen(self):
-        new_name = self.check_number() + '_robot.png'
-        os.rename('robot.png', new_name)
+        os.rename('robot.png', self.new_name())
         return
 
     def move_file(self):
-        file_name = self.rename_screen()
-        way = Path.home()
-        source_path = "/HT17/"
-        destination_path = "HT17/output/"
-        os.rename(source_path + file_name, destination_path + file_name)
+        source = self.new_name()
+        destination = "output"
+        shutil.move(source, destination)
+        return
+
+    def next_robot(self):
+        close = self._wait_for_element('#order-another')
+        close.click()
         return
 
 
 if __name__ == '__main__':
 
-    os.rmdir('output')
-    os.mkdir('output')
-    file = read_csv.CsvFile()
-    robot_param = file.read_file()
-    for order in robot_param:
-        with RobotsPlacer(order[0], order[1], order[2], order[3]) as placer:
-            placer.flow()
-            pass
+    if not os.path.exists('output'):
+        os.makedirs('output')
+    else:
+        for file in os.listdir('output'):
+            os.remove(os.path.join('output', file))
+    with RobotsPlacer() as placer:
+        placer.flow()
+        pass
 

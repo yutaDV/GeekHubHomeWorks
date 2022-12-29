@@ -21,5 +21,7 @@ class CsvFile:
 
 
 if __name__ == '__main__':
+
 	file = CsvFile()
 	print(file.read_file())
+	print(len(file.read_file()))
