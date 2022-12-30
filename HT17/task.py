@@ -24,8 +24,8 @@
 import os
 import shutil
 import time
-
 from pathlib import Path
+
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.chrome.service import Service
