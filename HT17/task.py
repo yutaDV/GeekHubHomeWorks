@@ -211,5 +211,3 @@ if __name__ == '__main__':
             os.remove(os.path.join('output', file))
     with RobotsPlacer() as placer:
         placer.flow()
-        pass
-
