@@ -8,3 +8,6 @@
 Логічний тип:	bool
 Двійкові типи:	bytes, bytearray, memoryview
 Немає Тип:	NoneType'''
+
+l = [[1, 2], [3, 4, 5]]
+print(sum(l, []))

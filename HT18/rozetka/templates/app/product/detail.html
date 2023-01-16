@@ -1,0 +1,15 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div>
+    <hr>
+        <p>id_product : {{product.id_product }}</p>
+        <p>title : {{product.title }}</p>
+        <p>price : {{product.price }}</p>
+        <p>old_price : {{product.old_price}}</p>
+        <p>brand : {{product.brand }}</p>
+        <p>category  : {{product.category  }}</p>
+    <hr>
+</div>
+{% endblock %}
