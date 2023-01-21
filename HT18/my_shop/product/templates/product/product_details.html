@@ -1,0 +1,29 @@
+{% extends 'ui/base.html' %}
+
+{% block extra_styles %}
+    <style>
+    .in-stock {
+        background-color: chartreuse;
+    }
+    .out-of-stock {
+        background-color: coral;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h3>Product details</h3>
+
+    <div>
+        <hr>
+        <p> Title: {{ product.title }}</p>
+        <p> ID: {{ product.product_id }}</p>
+        <p> Price: {{ product.price }}</p>
+        <p> Old price: {{ product.old_price }}</p>
+        <p> Brand : {{ product.brand  }}</p>
+        <p> In Stock: <span class="{% if product.in_stock %}in-stock{% else %}out-of-stock{% endif %} ">{{  product.in_stock|yesno:'In Stock, Out Of Stock' }} </span></p>
+        <p> View on external site: <a href="{{ product.url }}" target="_blank">View....</a></p>
+        <hr>
+    </div>
+
+{% endblock %}
