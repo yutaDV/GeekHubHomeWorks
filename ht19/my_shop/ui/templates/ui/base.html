@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial - scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MY rozetka Shop</title>
+    <style>
+        #nav-header > li {
+            display: inline-block;
+            min-width: 100px;
+            padding: 10px 5px 10px 5px;
+        }
+        .active-nav {
+            border: blueviolet 5px;
+        }
+    </style>
+</head>
+<body>
+{# Naviigation Header #}
+<h2>My rozetka Shop</h2>
+<div>
+    <ul id="nav-header">
+        <li {% if request.resolver_match.view_name == 'ui:index' %}class="active-nav"{% endif %}><a href="{% url 'ui:index' %}">Index </a></li>
+        <li {% if request.resolver_match.view_name == 'products:list' %}class="active-nav"{% endif %}><a href="{% url 'products:list' %}">Products </a></li>
+        <li {% if request.resolver_match.view_name == 'form:form' %}class="active-nav"{% endif %}><a href="{% url 'products:new_id' %}">Add products </a></li>
+        <li {% if request.resolver_match.view_name == 'cart:cart_detail' %}class="active-nav"{% endif %}><a href="{% url 'cart:cart_detail' %}">Cart </a></li>
+    </ul>
+</div>
+{# Content #}
+{% block content %}
+{% endblock %}
+</body>
+</html>

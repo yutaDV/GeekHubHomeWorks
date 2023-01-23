@@ -1,0 +1,13 @@
+{% extends 'ui/base.html' %}
+
+<p>Enter the comma-separated ID that you want to add to your products.</p>
+
+{% block content %}
+
+    <p>Enter  IDs that you want to add to your products,  each ID on a new line.</p>
+<form action="" method="post" novalidate>
+{% csrf_token %}
+{{ form }}
+<input type="submit" value="Send">
+</form>
+{% endblock %}
